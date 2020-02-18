@@ -40,7 +40,7 @@ public void OnClientPutInServer(int client)
 
 public Action SDK_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	/* Check if the damage was not done by a player */
+	/* The attacker must be a player and ignore self damage or damage done by grenades */
 	if (attacker < 1 || attacker > MaxClients || inflictor < 1 || inflictor > MaxClients)
 	{
 		return Plugin_Continue;
