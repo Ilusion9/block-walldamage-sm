@@ -40,7 +40,7 @@ public void OnClientPutInServer(int client)
 
 public Action SDK_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	/* Check if the damage was done by a player */
+	/* Check if the damage was not done by a player */
 	if (attacker < 1 || attacker > MaxClients || inflictor < 1 || inflictor > MaxClients)
 	{
 		return Plugin_Continue;
@@ -49,8 +49,8 @@ public Action SDK_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	float attackerPos[3];
 	GetClientEyePosition(attacker, attackerPos);
 	
-	Handle trace = TR_TraceRayFilterEx(attackerPos, damagePosition, MASK_SHOT, RayType_EndPoint, TraceRayFilterPlayers, victim);
-	bool blockDamage = TR_DidHit(trace) && TR_GetEntityIndex(trace) != victim;
+	Handle trace = TR_TraceRayFilterEx(attackerPos, damagePosition, MASK_SHOT, RayType_EndPoint, TraceRayFilterPlayers);
+	bool blockDamage = TR_DidHit(trace);
 	delete trace;
 	
 	if (blockDamage)
@@ -71,11 +71,5 @@ public bool TraceRayFilterPlayers(int entity, int contentsMask, any data)
 		return true;
 	}
 	
-	/* Allow only the victim to be hit by the trace (for damage done through player and wall) */
-	if (entity != view_as<int>(data))
-	{
-		return false;
-	}
-	
-	return true;
+	return false;
 }
